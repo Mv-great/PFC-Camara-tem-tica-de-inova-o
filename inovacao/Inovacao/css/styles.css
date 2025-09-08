@@ -428,6 +428,11 @@ section h3 {
     transform: translateY(-2px);
 }
 
+footer{
+    background-color: #004E64;
+}
+
+
 /* Responsividade */
 @media (max-width: 768px) {
     .main-nav {

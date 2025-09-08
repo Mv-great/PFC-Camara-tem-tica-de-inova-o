@@ -51,10 +51,7 @@ Junte-se a nós na construção de um Assis Chateaubriand mais inovador, competi
         <?php
             $sql = "SELECT * FROM artigos where categoria_id=1"; ;
             $result = $conn->query($sql);
-         
-            
-            
-           
+   
         ?>
         <section id="Notícias" class="noticias">
             <h3>Notícias</h3>
@@ -81,11 +78,7 @@ Junte-se a nós na construção de um Assis Chateaubriand mais inovador, competi
         </section>
    <?php
             $sql = "SELECT * FROM artigos where categoria_id=2"; ;
-            $result = $conn->query($sql);
-         
-            
-            
-           
+            $result = $conn->query($sql);        
         ?>
 
 
@@ -100,17 +93,16 @@ Junte-se a nós na construção de um Assis Chateaubriand mais inovador, competi
     <div class='evento-item'>
                     <div class='evento-icon'>📅</div>
                     <div class='evento-info'>
-                        <div class='evento-data'>$row[conteudo]</div>
+                        <div class='evento-data'>$row[data_evento]</div>
                         <div class='evento-titulo'> <p>$row[titulo]</p> </div>
+                        <a href='evento.php?cd=$row[id]' class='ver-todos'>Ver evento</a>
                     </div>
                             ";
-                }}
-        
-        
+                }}      
         ?>      
         
          
-            <a href="#" class="ver-todos">Ver todos os eventos</a>
+            <a href="eventos.php" class="ver-todos">Ver todos os eventos</a>
         </section>
 
     <?php
@@ -151,6 +143,11 @@ Junte-se a nós na construção de um Assis Chateaubriand mais inovador, competi
             <a href="#" class="ver-todos">Ver todos os projetos</a>
         </section>
 
+       
+        </div>
+    </main>
+    <footer>
+           
         <div class="bottom-sections">
             <section class="documentos">
                 <h3>Documentos</h3>
@@ -170,8 +167,7 @@ Junte-se a nós na construção de um Assis Chateaubriand mais inovador, competi
                     <button type="submit">Enviar</button>
                 </form>
             </section>
-        </div>
-    </main>
+    </footer>
 </body>
 </html>
 

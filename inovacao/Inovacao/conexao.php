@@ -2,7 +2,7 @@
 $host = "localhost";  // Servidor
 $usuario = "root";    // Usuário do banco
 $senha = "";          // Senha
-$banco = "banco de dados câmara de inovação"; // Nome do banco de dados
+$banco = "Marcus"; // Nome do banco de dados
 
 // Criar conexão
 $conn = new mysqli($host, $usuario, $senha, $banco);
