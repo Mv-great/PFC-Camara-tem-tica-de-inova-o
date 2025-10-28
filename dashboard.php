@@ -45,6 +45,12 @@ $conn->close();
                     <span class="icon">🚀</span>
                     Projetos
                 </a>
+                <?php if ($_SESSION['user_tipo'] == 'admin'): ?>
+                <a href="criar_usuario.php" class="nav-item">
+                    <span class="icon">👥</span>
+                    Criar Usuário
+                </a>
+                <?php endif; ?>
             </nav>
             <div class="sidebar-footer">
                 <div class="user-info">

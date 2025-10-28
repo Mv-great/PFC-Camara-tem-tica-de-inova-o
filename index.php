@@ -54,7 +54,7 @@ $result = $conn->query($sql);
                 FROM artigos a 
                 LEFT JOIN usuarios u ON a.autor_id = u.id 
                 WHERE a.categoria_id = 1 
-                ORDER BY a.criado_em DESC";
+                ORDER BY a.criado_em DESC LIMIT 3";
         $result = $conn->query($sql);
         ?>
         <section id="Noticias" class="noticias">
@@ -76,7 +76,7 @@ $result = $conn->query($sql);
                 }
                 ?>
             </div>
-            <a href="#" class="ver-todas">Ver todas as notícias</a>
+            <a href="noticias_lista.php" class="ver-todas">Ver todas as notícias</a>
         </section>
 
         <?php
@@ -85,7 +85,7 @@ $result = $conn->query($sql);
                 FROM artigos a 
                 LEFT JOIN usuarios u ON a.autor_id = u.id 
                 WHERE a.categoria_id = 2 
-                ORDER BY a.data_evento DESC";
+                ORDER BY a.data_evento DESC LIMIT 3";
         $result = $conn->query($sql);
         ?>
         <section id="Eventos" class="eventos">
@@ -108,7 +108,7 @@ $result = $conn->query($sql);
                 }
                 ?>
             </div>
-            <a href="eventos.php" class="ver-todos">Ver todos os eventos</a>
+            <a href="eventos_lista.php" class="ver-todos">Ver todos os eventos</a>
         </section>
 
         <?php
@@ -117,7 +117,7 @@ $result = $conn->query($sql);
                 FROM artigos a 
                 LEFT JOIN usuarios u ON a.autor_id = u.id 
                 WHERE a.categoria_id = 3 
-                ORDER BY a.criado_em DESC";
+                ORDER BY a.criado_em DESC LIMIT 3";
         $result = $conn->query($sql);
         ?>
         <section id="Projetos" class="projetos">
@@ -139,7 +139,7 @@ $result = $conn->query($sql);
                 }
                 ?>
             </div>
-            <a href="#" class="ver-todos">Ver todos os projetos</a>
+            <a href="projetos_lista.php" class="ver-todos">Ver todos os projetos</a>
         </section>
     </main>
 

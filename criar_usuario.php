@@ -1,6 +1,6 @@
 <?php
 // Verificar autenticação
-include '/auth_check.php';
+include 'auth_check.php';
 
 // Verificar se é administrador
 if ($_SESSION['user_tipo'] != 'admin') {
@@ -8,7 +8,7 @@ if ($_SESSION['user_tipo'] != 'admin') {
 }
 
 // Incluir arquivo de conexão
-include '../conexao.php';
+include 'conexao.php';
 
 $mensagem = '';
 $tipo_mensagem = '';
