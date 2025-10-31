@@ -114,17 +114,24 @@ $mostrar_form = isset($_GET['action']) && ($_GET['action'] == 'add' || $_GET['ac
                     Eventos
                 </a>
                 <a href="projetos.php" class="nav-item">
-                    <span class="icon">🚀</span>
-                    Projetos
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_nome']); ?></span>
-                    <span class="user-role"><?php echo htmlspecialchars($_SESSION['user_tipo']); ?></span>
-                </div>
-                <a href="logout.php" class="btn-logout">Sair</a>
-            </div>
+	                    <span class="icon">🚀</span>
+	                    Projetos
+	                </a>
+	                <?php if ($_SESSION['user_tipo'] == 'admin'): ?>
+	                <a href="gerenciar_usuarios.php" class="nav-item">
+	                    <span class="icon">👥</span>
+	                    Gerenciar Usuários
+	                </a>
+	                <?php endif; ?>
+	            </nav>
+<div class="sidebar-footer">
+	                <div class="user-info">
+	                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_nome']); ?></span>
+	                    <span class="user-role"><?php echo htmlspecialchars($_SESSION['user_tipo']); ?></span>
+	                </div>
+	                <a href="editar_perfil.php" class="btn-edit-profile">Editar Perfil</a>
+	                <a href="logout.php" class="btn-logout">Sair</a>
+	            </div>
         </aside>
 
         <!-- Main Content -->

@@ -46,18 +46,21 @@ $conn->close();
                     Projetos
                 </a>
                 <?php if ($_SESSION['user_tipo'] == 'admin'): ?>
-                <a href="criar_usuario.php" class="nav-item">
-                    <span class="icon">👥</span>
-                    Criar Usuário
-                </a>
+  <a href="gerenciar_usuarios.php" class="nav-item">
+	                    <span class="icon">👥</span>
+	                    Gerenciar Usuários
+	                </a>
+	                </a>
+	              
                 <?php endif; ?>
             </nav>
             <div class="sidebar-footer">
-                <div class="user-info">
-                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_nome']); ?></span>
-                    <span class="user-role"><?php echo htmlspecialchars($_SESSION['user_tipo']); ?></span>
-                </div>
-                <a href="logout.php" class="btn-logout">Sair</a>
+<div class="user-info">
+	                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_nome']); ?></span>
+	                    <span class="user-role"><?php echo htmlspecialchars($_SESSION['user_tipo']); ?></span>
+	                </div>
+	                <a href="editar_perfil.php" class="btn-edit-profile">Editar Perfil</a>
+	                <a href="logout.php" class="btn-logout">Sair</a>
             </div>
         </aside>
 
@@ -112,10 +115,14 @@ $conn->close();
                         <span class="action-icon">➕</span>
                         <span class="action-text">Novo Projeto</span>
                     </a>
-                    <a href="index.php" class="action-card" target="_blank">
-                        <span class="action-icon">🌐</span>
-                        <span class="action-text">Ver Site</span>
-                    </a>
+<a href="index.php" class="action-card" target="_blank">
+	                        <span class="action-icon">🌐</span>
+	                        <span class="action-text">Ver Site</span>
+	                    </a>
+	                    <a href="editar_perfil.php" class="action-card">
+	                        <span class="action-icon">👤</span>
+	                        <span class="action-text">Editar Meu Perfil</span>
+	                    </a>
                 </div>
             </div>
         </main>

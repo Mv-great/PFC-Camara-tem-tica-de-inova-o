@@ -20,6 +20,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $senha = $_POST['senha'];
     $tipo = $_POST['tipo'];
     
+    $foto_perfil = NULL;
+    
+    // Processar upload de foto
+    if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
+        $target_dir = "uploads/perfil/";
+        // Criar diretório se não existir
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $file_extension = strtolower(pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION));
+        $allowed_extensions = array("jpg", "jpeg", "png", "gif");
+        
+        if (in_array($file_extension, $allowed_extensions)) {
+            $new_file_name = uniqid('perfil_', true) . '.' . $file_extension;
+            $target_file = $target_dir . $new_file_name;
+            
+            if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $target_file)) {
+                $foto_perfil = $target_file;
+            } else {
+                $mensagem = "Erro ao fazer upload da foto.";
+                $tipo_mensagem = 'error';
+                // Se houver erro no upload, interrompe o processo de criação de usuário
+                goto end_process;
+            }
+        } else {
+            $mensagem = "Apenas arquivos JPG, JPEG, PNG e GIF são permitidos.";
+            $tipo_mensagem = 'error';
+            goto end_process;
+        }
+    }
+    
     if (empty($nome) || empty($email) || empty($senha)) {
         $mensagem = "Por favor, preencha todos os campos.";
         $tipo_mensagem = 'error';
@@ -41,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
             
             // Inserir usuário
-            $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha, tipo) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $nome, $email, $senha_hash, $tipo);
+            $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha, tipo, foto_perfil) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $nome, $email, $senha_hash, $tipo, $foto_perfil);
             
             if ($stmt->execute()) {
                 $mensagem = "Usuário criado com sucesso!";
@@ -53,10 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         $stmt->close();
-    }
-}
-
-$conn->close();
+	    }
+	}
+	
+	end_process:
+	
+	$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -87,17 +121,22 @@ $conn->close();
                     Eventos
                 </a>
                 <a href="projetos.php" class="nav-item">
-                    <span class="icon">🚀</span>
-                    Projetos
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_nome']); ?></span>
-                    <span class="user-role"><?php echo htmlspecialchars($_SESSION['user_tipo']); ?></span>
-                </div>
-                <a href="logout.php" class="btn-logout">Sair</a>
-            </div>
+	                    <span class="icon">🚀</span>
+	                    Projetos
+	                </a>
+	                <a href="gerenciar_usuarios.php" class="nav-item active">
+	                    <span class="icon">👥</span>
+	                    Gerenciar Usuários
+	                </a>
+	            </nav>
+<div class="sidebar-footer">
+	                <div class="user-info">
+	                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_nome']); ?></span>
+	                    <span class="user-role"><?php echo htmlspecialchars($_SESSION['user_tipo']); ?></span>
+	                </div>
+	                <a href="editar_perfil.php" class="btn-edit-profile">Editar Perfil</a>
+	                <a href="logout.php" class="btn-logout">Sair</a>
+	            </div>
         </aside>
 
         <!-- Main Content -->
@@ -114,7 +153,7 @@ $conn->close();
             <?php endif; ?>
 
             <div class="form-container">
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="nome">Nome Completo *</label>
                         <input type="text" id="nome" name="nome" required>
@@ -131,13 +170,19 @@ $conn->close();
                         <small style="color: #666; font-size: 12px;">Mínimo de 6 caracteres</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="tipo">Tipo de Usuário *</label>
-                        <select id="tipo" name="tipo" required>
-                            <option value="editor">Editor</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
+<div class="form-group">
+	                        <label for="tipo">Tipo de Usuário *</label>
+	                        <select id="tipo" name="tipo" required>
+	                            <option value="editor">Editor</option>
+	                            <option value="admin">Administrador</option>
+	                        </select>
+	                    </div>
+	                    
+	                    <div class="form-group">
+	                        <label for="foto_perfil">Foto de Perfil</label>
+	                        <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
+	                        <small style="color: #666; font-size: 12px;">Formatos aceitos: JPG, JPEG, PNG, GIF</small>
+	                    </div>
                     
                     <div class="form-actions">
                         <button type="submit" class="btn-primary">Criar Usuário</button>

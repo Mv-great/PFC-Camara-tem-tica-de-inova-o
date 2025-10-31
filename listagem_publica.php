@@ -23,19 +23,19 @@ function buscar_artigos($conn, $categoria_id, $titulo_pagina, $data_coluna = 'cr
 }
 
 // Variáveis que devem ser definidas nos arquivos de categoria (ex: noticias_lista.php)
+$categoria_id = 0; // 1: Notícias, 2: Eventos, 3: Projetos
+$titulo_pagina = "Lista de Artigos";
+$data_coluna = 'criado_em'; // Coluna de ordenação, 'data_evento' para eventos
+
+// O arquivo que inclui este template deve definir as variáveis acima e então incluir este arquivo.
 // Exemplo:
 // $categoria_id = 1;
 // $titulo_pagina = "Todas as Notícias";
 // include 'listagem_publica.php';
 
-// Inicializa variáveis com valores padrão se não estiverem definidas
-$categoria_id = $categoria_id ?? 0; // 1: Notícias, 2: Eventos, 3: Projetos
-$titulo_pagina = $titulo_pagina ?? "Lista de Artigos";
-$data_coluna = $data_coluna ?? 'criado_em'; // Coluna de ordenação, 'data_evento' para eventos
-
-// Se a categoria não foi definida (ou é 0), encerra com erro.
+// Se as variáveis não foram definidas, não faz sentido continuar
 if ($categoria_id === 0) {
-    die("Erro: Categoria não definida. Verifique se \$categoria_id foi definido no arquivo de inclusão.");
+    die("Erro: Categoria não definida.");
 }
 
 $dados = buscar_artigos($conn, $categoria_id, $titulo_pagina, $data_coluna);
@@ -103,20 +103,18 @@ $result_categorias = $conn->query($sql_categorias);
     <header>
         <nav class="main-nav">
             <ul class="nav-links">
+                <li><a href="index.php">Início</a></li>
                 <?php
-                // Resetar o ponteiro do resultado das categorias
-                $result_categorias->data_seek(0);
                 if ($result_categorias->num_rows > 0) {
                     while($row = $result_categorias->fetch_assoc()) {
                         // Links de categoria no menu principal
-                        $categoria_nome = htmlspecialchars($row['nome']);
-                        // Mapeamento para os links da lista
                         $link_map = [
                             'Notícias' => 'noticias_lista.php',
                             'Eventos' => 'eventos_lista.php',
                             'Projetos' => 'projetos_lista.php',
                         ];
-                        $link = $link_map[$categoria_nome] ?? '#';
+                        $categoria_nome = htmlspecialchars($row['nome']);
+                        $link = $link_map[$categoria_nome] ?? '#'; // Fallback para #
                         echo "<li><a href='{$link}'>{$categoria_nome}</a></li>";
                     }
                 }
@@ -162,9 +160,8 @@ $result_categorias = $conn->query($sql_categorias);
 
     </main>
 
-    </main>
-
     <footer>
+        <!-- O rodapé completo de index.php seria incluído aqui para consistência -->
         <div class="bottom-sections">
             <section class="documentos">
                 <h3>Documentos</h3>

@@ -1,3 +1,28 @@
+<?php
+// Incluir arquivo de conexão
+include 'conexao.php';
+
+// Buscar categorias
+$sql = "SELECT nome FROM categorias";
+$result = $conn->query($sql);
+
+// Consulta para buscar todos os usuários
+$sql = "SELECT nome, email, foto_perfil FROM usuarios ORDER BY nome ASC";
+$result = $conn->query($sql);
+
+$membros = [];
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $membros[] = $row;
+    }
+}
+$conn->close();
+// Caminho para a imagem de perfil padrão
+$default_profile_pic = 'images/default_profile.png';
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,100 +35,43 @@
     <header>
         <nav class="main-nav">
             <ul class="nav-links">
-                <li><a href="#noticias">Notícias</a></li>
-                <li><a href="#eventos">Eventos</a></li>
-                <li><a href="#projetos">Projetos</a></li>
+                <?php
+                if ($result->num_rows > 0) {
+                    while($row = $result->fetch_assoc()) {
+                        echo "<li><a href='#{$row['nome']}'>{$row['nome']}</a></li>";
+                    }
+                }
+                ?>
             </ul>
-            <button class="membros-btn">Membros</button>
+            <a href="membros.php" class="membros-btn">Membros</a>
+            <a href="login.php" class="admin-btn">Login</a>
         </nav>
     </header>
 
     <main>
-        <section class="hero">
-            <h1>CÂMARA TEMÁTICA DE INOVAÇÃO</h1>
-            <h2>ASSIS CHATEAUBRIAND</h2>
-            
-            <div class="hero-content">
-                <div class="hero-image">
-                    <div class="placeholder-image"></div>
-                </div>
-                <div class="sobre-box">
-                    <h3>Sobre</h3>
-                </div>
+       <div class="membros-container">
+        <h1>Membros da Câmara Temática de Inovação</h1>
+        
+        <?php if (empty($membros)): ?>
+            <p>Nenhum membro cadastrado.</p>
+        <?php else: ?>
+            <div class="membros-grid">
+                <?php foreach ($membros as $membro): ?>
+                    <div class="membro-card">
+                        <?php
+                        $foto_path = !empty($membro['foto_perfil']) && file_exists($membro['foto_perfil']) ? $membro['foto_perfil'] : $default_profile_pic;
+                        ?>
+                        <img src="<?php echo htmlspecialchars($foto_path); ?>" alt="Foto de <?php echo htmlspecialchars($membro['nome']); ?>" class="membro-foto">
+                        <h2 class="membro-nome"><?php echo htmlspecialchars($membro['nome']); ?></h2>
+                        <p class="membro-email">contato:<?php echo htmlspecialchars($membro['email']); ?></p>
+                    </div>
+                <?php endforeach; ?>
             </div>
-        </section>
+        <?php endif; ?>
+    </div>
+    </main>
 
-        <section id="noticias" class="noticias">
-            <h3>Notícias</h3>
-            <div class="noticias-grid">
-                <article class="noticia-item">
-                    <div class="noticia-image"></div>
-                    <div class="noticia-content">
-                        <h4>Lorem ipsum dolor sit amet</h4>
-                        <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                    </div>
-                </article>
-                <article class="noticia-item">
-                    <div class="noticia-image"></div>
-                    <div class="noticia-content">
-                        <h4>Ut enim ad minim veniam</h4>
-                        <p>Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    </div>
-                </article>
-            </div>
-            <a href="#" class="ver-todas">Ver todas as notícias</a>
-        </section>
-
-        <section id="eventos" class="eventos">
-            <h3>Próximos Eventos</h3>
-            <div class="eventos-grid">
-                <div class="evento-item">
-                    <div class="evento-icon">📅</div>
-                    <div class="evento-info">
-                        <div class="evento-data">15/03/2025</div>
-                        <div class="evento-titulo">Lorem ipsum dolor sit amet consectetur</div>
-                    </div>
-                </div>
-                <div class="evento-item">
-                    <div class="evento-icon">📅</div>
-                    <div class="evento-info">
-                        <div class="evento-data">22/03/2025</div>
-                        <div class="evento-titulo">Adipiscing elit sed do eiusmod</div>
-                        <div class="evento-local">Centro de Convenções</div>
-                    </div>
-                </div>
-            </div>
-            <a href="#" class="ver-todos">Ver todos os eventos</a>
-        </section>
-
-        <section id="projetos" class="projetos">
-            <h3>Projetos</h3>
-            <div class="projetos-grid">
-                <article class="projeto-item">
-                    <div class="projeto-image"></div>
-                    <div class="projeto-content">
-                        <h4>Tempor incididunt ut labore</h4>
-                        <p>Et dolore magna aliqua ut enim ad minim veniam quis nostrud.</p>
-                    </div>
-                </article>
-                <article class="projeto-item">
-                    <div class="projeto-image"></div>
-                    <div class="projeto-content">
-                        <h4>Exercitation ullamco laboris</h4>
-                        <p>Nisi ut aliquip ex ea commodo consequat duis aute irure dolor.</p>
-                    </div>
-                </article>
-                <article class="projeto-item">
-                    <div class="projeto-image"></div>
-                    <div class="projeto-content">
-                        <h4>In reprehenderit in voluptate</h4>
-                        <p>Velit esse cillum dolore eu fugiat nulla pariatur excepteur sint.</p>
-                    </div>
-                </article>
-            </div>
-            <a href="#" class="ver-todos">Ver todos os projetos</a>
-        </section>
-
+    <footer>
         <div class="bottom-sections">
             <section class="documentos">
                 <h3>Documentos</h3>
@@ -124,7 +92,6 @@
                 </form>
             </section>
         </div>
-    </main>
+    </footer>
 </body>
 </html>
-

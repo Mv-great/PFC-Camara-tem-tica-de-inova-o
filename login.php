@@ -214,7 +214,7 @@ $conn->close();
         </form>
         
         <div class="back-link">
-            <a href="../index.php">← Voltar ao site</a>
+            <a href="index.php">← Voltar ao site</a>
         </div>
     </div>
 </body>

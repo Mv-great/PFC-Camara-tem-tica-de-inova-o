@@ -26,7 +26,7 @@ $result = $conn->query($sql);
                 }
                 ?>
             </ul>
-            <button class="membros-btn">Membros</button>
+            <a href="membros.php" class="membros-btn">Membros</a>
             <a href="login.php" class="admin-btn">Login</a>
         </nav>
     </header>
