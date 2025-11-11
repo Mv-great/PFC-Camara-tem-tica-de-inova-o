@@ -35,14 +35,9 @@ if (!$artigo) {
 // Buscar categorias para o menu de navegação
 $sql_categorias = "SELECT nome FROM categorias";
 $result_categorias = $conn->query($sql_categorias);
-?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($artigo['titulo']); ?> - Câmara Temática de Inovação</title>
-    <link rel="stylesheet" href="css/styles.css">
+
+$titulo_pagina = htmlspecialchars($artigo['titulo']);
+$estilos_adicionais = '
     <style>
         /* Estilos básicos para a página de artigo individual */
         .artigo-individual-container {
@@ -79,36 +74,10 @@ $result_categorias = $conn->query($sql_categorias);
             margin-bottom: 1em;
         }
     </style>
-</head>
-<body>
-    <header>
-        <nav class="main-nav">
-            <ul class="nav-links">
-                <?php
-                // Resetar o ponteiro do resultado das categorias
-                $result_categorias->data_seek(0);
-                if ($result_categorias->num_rows > 0) {
-                    while($row = $result_categorias->fetch_assoc()) {
-                        // Links de categoria no menu principal
-                        $categoria_nome = htmlspecialchars($row['nome']);
-                        // Mapeamento para os links da lista
-                        $link_map = [
-                            'Notícias' => 'noticias_lista.php',
-                            'Eventos' => 'eventos_lista.php',
-                            'Projetos' => 'projetos_lista.php',
-                        ];
-                        $link = $link_map[$categoria_nome] ?? '#';
-                        echo "<li><a href='{$link}'>{$categoria_nome}</a></li>";
-                    }
-                }
-                ?>
-            </ul>
-            <button class="membros-btn">Membros</button>
-            <a href="login.php" class="admin-btn">Login</a>
-        </nav>
-    </header>
-
-    <main class="artigo-individual-container">
+';
+include 'header.php';
+?>
+    <div class="artigo-individual-container">
         <h1><?php echo htmlspecialchars($artigo['titulo']); ?></h1>
         
         <div class="artigo-meta">
@@ -130,30 +99,9 @@ $result_categorias = $conn->query($sql_categorias);
         </p>
     </main>
 
-    </main>
-
-    <footer>
-        <div class="bottom-sections">
-            <section class="documentos">
-                <h3>Documentos</h3>
-                <ul class="documentos-list">
-                    <li><a href="#">Lorem ipsum dolor sit amet consectetur adipiscing elit</a></li>
-                    <li><a href="#">Sed do eiusmod tempor incididunt ut labore et dolore</a></li>
-                    <li><a href="#">Magna aliqua ut enim ad minim veniam quis nostrud</a></li>
-                </ul>
-            </section>
-
-            <section class="contato">
-                <h3>Contato</h3>
-                <form class="contato-form">
-                    <input type="text" placeholder="Nome completo" required>
-                    <input type="email" placeholder="E-mail" required>
-                    <textarea placeholder="Mensagem" rows="4" required></textarea>
-                    <button type="submit">Enviar</button>
-                </form>
-            </section>
-        </div>
-    </footer>
-</body>
-</html>
-<?php $conn->close(); ?>
+    </div>
+<?php 
+$fechar_conexao_externa = true; // Evita que footer.php feche a conexão
+include 'footer.php'; 
+$conn->close();
+?>

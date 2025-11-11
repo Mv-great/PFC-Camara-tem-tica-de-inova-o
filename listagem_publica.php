@@ -23,19 +23,14 @@ function buscar_artigos($conn, $categoria_id, $titulo_pagina, $data_coluna = 'cr
 }
 
 // Variáveis que devem ser definidas nos arquivos de categoria (ex: noticias_lista.php)
-$categoria_id = 0; // 1: Notícias, 2: Eventos, 3: Projetos
-$titulo_pagina = "Lista de Artigos";
-$data_coluna = 'criado_em'; // Coluna de ordenação, 'data_evento' para eventos
-
-// O arquivo que inclui este template deve definir as variáveis acima e então incluir este arquivo.
 // Exemplo:
 // $categoria_id = 1;
 // $titulo_pagina = "Todas as Notícias";
 // include 'listagem_publica.php';
 
-// Se as variáveis não foram definidas, não faz sentido continuar
-if ($categoria_id === 0) {
-    die("Erro: Categoria não definida.");
+// Se as variáveis não foram definidas, encerra com erro.
+if (!isset($categoria_id) || !isset($titulo_pagina) || !isset($data_coluna)) {
+    die("Erro: Categoria não definida. Verifique se \$categoria_id, \$titulo_pagina e \$data_coluna foram definidos no arquivo de inclusão.");
 }
 
 $dados = buscar_artigos($conn, $categoria_id, $titulo_pagina, $data_coluna);
@@ -45,14 +40,9 @@ $titulo = $dados['titulo'];
 // Buscar categorias para o menu de navegação
 $sql_categorias = "SELECT nome FROM categorias";
 $result_categorias = $conn->query($sql_categorias);
-?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($titulo); ?> - Câmara Temática de Inovação</title>
-    <link rel="stylesheet" href="css/styles.css">
+
+$titulo_pagina = htmlspecialchars($titulo);
+$estilos_adicionais = '
     <style>
         /* Estilos básicos para a página de listagem */
         .listagem-container {
@@ -98,34 +88,10 @@ $result_categorias = $conn->query($sql_categorias);
             text-decoration: underline;
         }
     </style>
-</head>
-<body>
-    <header>
-        <nav class="main-nav">
-            <ul class="nav-links">
-                <li><a href="index.php">Início</a></li>
-                <?php
-                if ($result_categorias->num_rows > 0) {
-                    while($row = $result_categorias->fetch_assoc()) {
-                        // Links de categoria no menu principal
-                        $link_map = [
-                            'Notícias' => 'noticias_lista.php',
-                            'Eventos' => 'eventos_lista.php',
-                            'Projetos' => 'projetos_lista.php',
-                        ];
-                        $categoria_nome = htmlspecialchars($row['nome']);
-                        $link = $link_map[$categoria_nome] ?? '#'; // Fallback para #
-                        echo "<li><a href='{$link}'>{$categoria_nome}</a></li>";
-                    }
-                }
-                ?>
-            </ul>
-            <button class="membros-btn">Membros</button>
-            <a href="login.php" class="admin-btn">Login</a>
-        </nav>
-    </header>
-
-    <main class="listagem-container">
+';
+include 'header.php';
+?>
+    <div class="listagem-container">
         <h1><?php echo htmlspecialchars($titulo); ?></h1>
         
         <?php if ($artigos->num_rows > 0): ?>
@@ -160,29 +126,9 @@ $result_categorias = $conn->query($sql_categorias);
 
     </main>
 
-    <footer>
-        <!-- O rodapé completo de index.php seria incluído aqui para consistência -->
-        <div class="bottom-sections">
-            <section class="documentos">
-                <h3>Documentos</h3>
-                <ul class="documentos-list">
-                    <li><a href="#">Lorem ipsum dolor sit amet consectetur adipiscing elit</a></li>
-                    <li><a href="#">Sed do eiusmod tempor incididunt ut labore et dolore</a></li>
-                    <li><a href="#">Magna aliqua ut enim ad minim veniam quis nostrud</a></li>
-                </ul>
-            </section>
-
-            <section class="contato">
-                <h3>Contato</h3>
-                <form class="contato-form">
-                    <input type="text" placeholder="Nome completo" required>
-                    <input type="email" placeholder="E-mail" required>
-                    <textarea placeholder="Mensagem" rows="4" required></textarea>
-                    <button type="submit">Enviar</button>
-                </form>
-            </section>
-        </div>
-    </footer>
-</body>
-</html>
-<?php $conn->close(); ?>
+    </div>
+<?php 
+$fechar_conexao_externa = true; // Evita que footer.php feche a conexão
+include 'footer.php'; 
+$conn->close();
+?>

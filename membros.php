@@ -1,93 +1,81 @@
 <?php
+// Incluir arquivo de conexão
 include 'conexao.php';
 
-// Consulta para buscar todos os usuários
-$sql = "SELECT nome, email, foto_perfil FROM usuarios ORDER BY nome ASC";
-$result = $conn->query($sql);
+// Buscar categorias para o menu de navegação
+$sql_categorias = "SELECT nome FROM categorias";
+$result_categorias = $conn->query($sql_categorias);
 
-$membros = [];
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $membros[] = $row;
-    }
-}
+// Buscar todos os usuários (membros)
+$sql_membros = "SELECT nome, tipo FROM usuarios ORDER BY nome ASC";
+$result_membros = $conn->query($sql_membros);
 
-$conn->close();
-
-// Caminho para a imagem de perfil padrão
-$default_profile_pic = 'images/default_profile.png';
-?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membros da Câmara Temática</title>
-    <!-- Tentativa de usar o CSS existente para manter o estilo -->
-    <link rel="stylesheet" href="css/styles.css">
+$titulo_pagina = 'Membros - Câmara Temática de Inovação';
+$estilos_adicionais = '
     <style>
+        /* Estilos específicos para a página de Membros */
         .membros-container {
             max-width: 1200px;
             margin: 50px auto;
             padding: 20px;
+            min-height: 50vh; /* Garante que o footer não suba muito */
+        }
+        .membros-container h1 {
             text-align: center;
+            margin-bottom: 40px;
+            color: #333;
         }
         .membros-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
-            margin-top: 40px;
         }
         .membro-card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             padding: 20px;
             text-align: center;
-            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .membro-card:hover {
-            transform: translateY(-5px);
+        .membro-card h3 {
+            margin-top: 0;
+            color: #0056b3;
         }
-        .membro-foto {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 4px solid #007bff; /* Cor primária do tema */
-        }
-        .membro-nome {
-            font-size: 1.5em;
-            margin: 0 0 5px 0;
-            color: #333;
-        }
-        .membro-email {
+        .membro-card p {
             color: #666;
             font-size: 0.9em;
         }
     </style>
-</head>
-<body>
+';
+include 'header.php';
+?>
     <div class="membros-container">
         <h1>Membros da Câmara Temática de Inovação</h1>
         
-        <?php if (empty($membros)): ?>
-            <p>Nenhum membro cadastrado.</p>
-        <?php else: ?>
-            <div class="membros-grid">
-                <?php foreach ($membros as $membro): ?>
+        <p style="text-align: center; margin-bottom: 50px;">
+            Aqui você pode listar os membros da câmara, suas funções e a instituição que representam.
+        </p>
+
+        <div class="membros-grid">
+            <?php if ($result_membros->num_rows > 0): ?>
+                <?php while($membro = $result_membros->fetch_assoc()): ?>
                     <div class="membro-card">
-                        <?php
-                        $foto_path = !empty($membro['foto_perfil']) && file_exists($membro['foto_perfil']) ? $membro['foto_perfil'] : $default_profile_pic;
-                        ?>
-                        <img src="<?php echo htmlspecialchars($foto_path); ?>" alt="Foto de <?php echo htmlspecialchars($membro['nome']); ?>" class="membro-foto">
-                        <h2 class="membro-nome"><?php echo htmlspecialchars($membro['nome']); ?></h2>
-                        <p class="membro-email">contato:<?php echo htmlspecialchars($membro['email']); ?></p>
+                        <h3><?php echo htmlspecialchars($membro['nome']); ?></h3>
+                        <p>Função: <?php echo htmlspecialchars($membro['tipo']); ?></p>
+                        <!-- Se houver uma coluna para instituição, ela seria adicionada aqui -->
+                        <!-- <p>Instituição: [Instituição]</p> -->
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p style="text-align: center; grid-column: 1 / -1;">Nenhum membro cadastrado.</p>
+            <?php endif; ?>
+        </div>
+    </main>
+
     </div>
-</body>
-</html>
+<?php 
+$fechar_conexao_externa = true; // Evita que footer.php feche a conexão
+include 'footer.php'; 
+$conn->close();
+?>
